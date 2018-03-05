@@ -13,7 +13,7 @@ Todd Lehmann
 ### Goal 
 *****
  
-Military culture is the set of norms that exist among military members about how to fight a war. The goal of this model is to explain why some military cultures lead to better organizational performance than others. Specifically, I intend to model the effects that different levels of trust stemming from recruitment methods (coercive vs. voluntary, class-based vs. non-class-based) and command structures (centralized vs. decentralized) have on the emergence of group-level beliefs (representing cultural norms) about a state of nature, and explore how variations in trust can lead to either more or less accurate cultural norms.
+Military culture is the set of norms that exist among military members about how to fight a war. The goal of this model is to explain why some military cultures lead to better organizational performance than others. Specifically, I intend to model the effects that different levels of trust between agents stemming from recruitment methods (coercive vs. voluntary, class-based vs. non-class-based) have on the emergence of group-level beliefs (representing cultural norms) about a state of nature, and explore how variations in trust can lead to either more or less accurate cultural norms.
 
 &nbsp;  
 ### Justification
@@ -68,6 +68,11 @@ Agent-owned variables include the following:
 * Previous payoffs (used to keep track of how well the agent has done in the past)
 * Belief (the agent's belief about the true value for the state of nature)
 
+Additionally, agents have fixed attributes that are used to update their beliefs when interacting with other agents:
+* Coercion level (if recruitment is coercive or voluntary)
+* Hierarchy level (an agent's position in the hierarchy based on its level)
+* Class level (an agent's class identity, e.g., high-level officers come from upper class and low-level soldiers come from lower class)
+
 ```python
 import numpy.random as RD
 import networkx as NX
@@ -80,6 +85,9 @@ from scipy.stats import norm
         network.node[n]['demand'] = RD.random()
         network.node[n]['belief'] = norm.ppf(RD.uniform(low=norm.cdf(0, m, s), high=norm.cdf(1, m, s), size=1), m, s)
         #The above truncates the normal distribution between 0 and 1 to make distribution of beliefs easier to interpret
+        
+    #PSEUDOCODE:
+      for each node at each level, assign coercion, hierarchy, and class attributes
 ```
 
 Agent-owned procedures exist for the Stag Hunt coordiation game. Agents either choose a best response to their neighbors' expected strategies (based on bargaining outcome), or they choose to imitate the most successful neighbor's strategy.
@@ -98,8 +106,7 @@ def best_response(n):  ##BEST RESPONSE PROCEDURE
             total += network.node[nb]['state']
 
     #Calculate expected payoff for playing Stag against each strategy
-    #stag_exp_payoff = total * SS_selfpayoff * network.node[n]['demand'] + (len(nbs) - total) * SH_selfpayoff
-    stag_exp_payoff = total * SS_selfpayoff + (len(nbs) - total) * SH_selfpayoff
+    stag_exp_payoff = total * SS_selfpayoff * network.node[n]['demand'] + (len(nbs) - total) * SH_selfpayoff
 
     #Calculate expected payoff for playing Hare
     hare_exp_payoff = total * HS_selfpayoff + (len(nbs) - total) * HH_selfpayoff
@@ -144,8 +151,7 @@ def imitate_best(n):  ##IMITATE THE BEST PROCEDURE
     #Update payoff history
     if current_strategy == 1:
         #Calculate expected payoff for playing Stag
-        #stag_exp_payoff = total * SS_selfpayoff * current_demand + (len(nbs) - total) * SH_selfpayoff
-        stag_exp_payoff = total * SS_selfpayoff + (len(nbs) - total) * SH_selfpayoff
+        stag_exp_payoff = total * SS_selfpayoff * current_demand + (len(nbs) - total) * SH_selfpayoff
         network.node[n]['previous_payoffs'].append(stag_exp_payoff)
         nextNetwork.node[n]['demand'] = current_demand
     elif current_strategy == 0:
@@ -153,6 +159,28 @@ def imitate_best(n):  ##IMITATE THE BEST PROCEDURE
         hare_exp_payoff = total * HS_selfpayoff + (len(nbs) - total) * HH_selfpayoff
         network.node[n]['previous_payoffs'].append(hare_exp_payoff)
         nextNetwork.node[n]['demand'] = current_demand
+
+def update_belief(n):
+    #For each neighbor with which an agent plays "Stag," exchange beliefs and update own belief based on level of trust in each neighbor
+    
+    #Determine interaction structure based on shortest path length
+    br_path=NX.single_source_shortest_path_length(network,n)
+    br_path_list = dict((k, v) for k, v in br_path.items() if v <= br_path_length)
+
+    #Get the set of neighbors that played Stag this round
+    nbs = list(br_path_list.keys())
+    
+    stag_neighbors_list = []
+        
+    for nb in nbs:
+        if network.node[nb]['state'] == 1:
+            stag_neighbors_list.append(nb)
+    
+    #PSEUDOCODE:
+    #Compute weighted belief updated based upon trust in own belief and trust in other neighbors' beliefs, which
+    #are determined by recruitment methods
+    for each Stag-playing neighbor, determine its class/coercion value, and apply assigned weighting to its belief value
+    update own belief based on weighted sum of own and neighbors' beliefs
 ```
 
 &nbsp; 
@@ -163,13 +191,24 @@ def imitate_best(n):  ##IMITATE THE BEST PROCEDURE
 
 Agents interact as nodes in a fixed hierarchical network that is defined by the command structure that exists in military organizations. To represent a hierarchical network, I will construct the interaction topology as an ideal-type hierarchy, i.e., a balanced tree. Therefore, each node has a set number of subordinate nodes, and there are a set number of levels in the tree. For example, in a two-level balanced tree with six subordinates per node, the top-level leader (overall commander) supervises six nodes in level one (mid-level leaders), and each of these level-one nodes would have six of their own subordinates in level two (low-level soldiers).
 
+```python
+import networkx as NX
+
+# Create a balanced tree graph (hierarchical structure)
+sup = supervised
+lev = levels
+network = NX.balanced_tree(sup,lev)
+```
+
 Within this network, interactions operate over two neighborhoods: the interaction neighborhood (which extends to some specified path length in the network) and the imitation neighborhood (which may extend to a different specified path length in the network, e.g., only to the immediate neighborhood in the network). Agents are able to interact with any other agent within their interaction neighborhood, but they only imitate agents in their imitation neighborhood. 
  
 **_Action Sequence_**
 
-1. An agent looks at its 
-2. Step 2
-3. Etc...
+1. An agent probabilistically chooses either the "best response" procedure or the "imitate the best" procedure. The probability of each procedure is set at the beginning of the simulation.
+2. For the "best response" procedure, each agent determines the expected payoffs for playing "Stag" or "Hare" this round based on the outcome of the divide-the-dollar bargaining game. (NOTE: This bargaining problem can be elevated to a higher level in the hierarchy if command is more centralized, thereby removing the bargaining problem at lower levels). If bargaining is successful, an agent expects its neighbor to play Stag, otherwise the agent expects its neighbor to play Hare. The agent then chooses the strategy that provides the highest expected payoff when played against all its neighbors' expected strategies. 
+3. For the "imitate the best" procedure, each agent considers the total payoffs that its neighbors currently hold, and chooses the strategy and bargaining demand yielding the highest total payoff.
+4. All agents update their strategies, payoffs received, and bargaining demands sychronously.
+5. For all neighbors with which an agent plays "Stag-Stag" in this round, the agent observes its neighbors' beliefs and updates its own belief based on its level of trust for each neighbor. This procedure is also updated synchronously. 
 
 ```python
 def step():
@@ -202,19 +241,96 @@ def step():
             imitate_best(n)
                     
     network, nextNetwork = nextNetwork, network
+    
+    #PSEUDOCODE:
+    #For each agent, update beliefs
+    
+    #for n in network.nodes_iter():
+        #update_beliefs(n)
 ```
 
 &nbsp; 
 ### 4) Model Parameters and Initialization
 
-_Describe and list any global parameters you will be applying in your model._
+Global parameters include time, network (which includes nodes, edges, and node attributes), and next network (which serves as a placeholder for current iteration updates).
 
-* Coercion level (if recruitment is coercive, 
-* Class level (an agent's class identity, e.g., high-level officers come from upper class and low-level soldiers come from lower class)
+Before initializing, the user specifies Stag Hunt payoff values, state of nature truth value, noise term (standard deviation of a Normal distribution with mean zero), probability of "imitate the best" procedure (where the probability of "best response" is 1 minus this value), agents' memory (number of rounds each agent keeps track of payoffs), the structure of the balanced tree, the interaction and imitation structures (specified as the path length from each agent that an interaction can occur), and if desired, an initial number of Stag players (otherwise, randomly assigned).
 
-_Describe how your model will be initialized_
+Upon initialization, the network is constructed as a balanced tree as specified by the user, and each agent is assigned a level of bargaining demand, strategy, and belief about the state of nature (which is based on a noisy signal of the true value). 
 
-_Provide a high level, step-by-step description of your schedule during each "tick" of the model_
+During each iteration, the action sequence described above is executed for each agent. All agents update their bargaining demands, strategies, payoffs received, and beliefs synchronously.
+
+```python
+import matplotlib
+matplotlib.use('TkAgg')
+
+import pylab as PL
+import networkx as NX
+#import random as RD
+import numpy.random as RD
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+#VARIABLES:
+payoff_map = {("S", "S"): (3.0,3.0), #Payoffs: Stag-Stag
+             ("S", "H"): (0, 1.0),  #Payoffs: Stag-Hare
+             ("H", "S"): (1.0, 0),  #Payoffs: Hare-Stag
+             ("H", "H"): (1.0, 1.0)}  #Payoffs: Hare-Hare
+    
+m = 0.5  #Truth value for state of nature (mu), about which agents receive a noisy signal initially (in [0,1])
+s = 0.2  #Noise term (e_i) for agent's state of nature signal (normally distributed with expectation zero)
+
+prob_imitate = 0.10 #Probability that imitate-the-best dynamics are selected at each iteration
+memory = 3  #Number of rounds each agent keeps track of payoffs
+    
+supervised = 6 #Number of agents supervised at each level
+levels = 2 #Number of levels (excluding top overall leader)
+
+#For the following path length variables, min = 1, max = 2*levels
+br_path_length = 2 #Number of paths a best-response interaction can span in the network for a given agent
+imitate_path_length = 2 #Number of paths an imitate-the-best interaction can span in the network for a given agent
+
+init_stag = 1  #Initial number of Stag players (Min = 1, max = total agents - 1)
+
+SS_selfpayoff, SS_otherpayoff = payoff_map[("S", "S")]
+SH_selfpayoff, SH_otherpayoff = payoff_map[("S", "H")]
+HS_selfpayoff, HS_otherpayoff = payoff_map[("H", "S")]
+HH_selfpayoff, HH_otherpayoff = payoff_map[("H", "H")]
+
+demand_lower = HH_selfpayoff/(SS_selfpayoff + SS_otherpayoff)
+
+RD.seed()
+
+col = {0:'r', 1:'k'} #Hare strategies are red, Stag strategies are black
+
+def init():
+    global time, network, nextNetwork, positions
+
+    time = 0
+    
+    # Create a balanced tree graph (hierarchical structure)
+    sup = supervised
+    lev = levels
+    network = NX.balanced_tree(sup,lev)
+    
+    #Assign initial attributes for each agent
+    for n in network.nodes_iter():
+        network.node[n]['state'] = 0
+        network.node[n]['previous_payoffs'] = []
+        #network.node[n]['demand'] = RD.uniform(demand_lower,1-demand_lower)
+        network.node[n]['demand'] = RD.random()
+        network.node[n]['belief'] = norm.ppf(RD.uniform(low=norm.cdf(0, m, s), high=norm.cdf(1, m, s), size=1), m, s)
+        #The above truncates the normal distribution between 0 and 1 to make distribution of beliefs easier to interpret
+        
+    #Assign initial number of Stag players
+    stags = RD.sample(network.nodes(),init_stag)
+    for stag in stags:
+        network.node[stag]['state'] = 1
+
+    nextNetwork = network.copy()
+
+    positions = NX.spring_layout(network)
+```
 
 &nbsp; 
 
