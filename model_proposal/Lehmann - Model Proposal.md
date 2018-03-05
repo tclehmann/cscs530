@@ -37,11 +37,22 @@ To explore the micro-level processes, I will model individual agents that intera
 &nbsp; 
 ### 1) Environment
 
-I do not model the environment, though it is represented as the state of nature. I am interested in both 1) whether an organization can reach an accurate consensus about the state of nature and 2) the speed at which they reach this cultural consensus. Therefore, if I were to model the environment explicitly, I could model it as a changing state of nature that changes more or less frequently, which would affect agents' updated beliefs after a certain period of time. However, for the purposes of the present model, an explicit representation of the environment in not necessary.
+The envirionment is fixed upon initialization, and is represented by 1) a payoff structure for agents playing a Stag Hunt game and 2) a truth value for the state of nature. I am interested in both 1) whether an organization can reach an accurate consensus about the state of nature and 2) the speed at which they reach this cultural consensus. Therefore, if I were to model the environment dynamically, I could model it as changing payoffs and/or a changing state of nature that changes more or less frequently, which would affect agents' best responses and updated beliefs, respectively, after a certain period of time. However, for the purposes of the present model, a fixed environment suffices.
+
+```python
+payoff_map = {("S", "S"): (3.0,3.0), #Payoffs: Stag-Stag
+             ("S", "H"): (0, 1.0),  #Payoffs: Stag-Hare
+             ("H", "S"): (1.0, 0),  #Payoffs: Hare-Stag
+             ("H", "H"): (1.0, 1.0)}  #Payoffs: Hare-Hare
+    
+m = 0.5  #Truth value for state of nature (mu) (in [0,1] for modeling convenience), about which agents receive a noisy signal initially
+```
 
 &nbsp; 
 
 ### 2) Agents
+ 
+Agents are nodes in a hierarchical network that represent either individuals or sub-units of the organization. 
  
  _Description of the "agents" in the system. Things to specify *if they apply*:_
  
