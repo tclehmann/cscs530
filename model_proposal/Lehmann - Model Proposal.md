@@ -37,7 +37,7 @@ To explore the micro-level processes, I will model individual agents that intera
 &nbsp; 
 ### 1) Environment
 
-The envirionment is fixed upon initialization, and is represented by 1) a payoff structure for agents playing a Stag Hunt game and 2) a truth value for the state of nature. I am interested in both 1) whether an organization can reach an accurate consensus about the state of nature and 2) the speed at which they reach this cultural consensus. Therefore, if I were to model the environment dynamically, I could model it as changing payoffs and/or a changing state of nature that changes more or less frequently, which would affect agents' best responses and updated beliefs, respectively, after a certain period of time. However, for the purposes of the present model, a fixed environment suffices.
+The static envirionment is fixed upon initialization, and is represented by 1) a payoff structure for agents playing a Stag Hunt game and 2) a truth value for the state of nature. I am interested in both 1) whether an organization can reach an accurate consensus about the state of nature and 2) the speed at which they reach this cultural consensus. Therefore, if I were to model the environment dynamically, I could model it as changing payoffs and/or a changing state of nature that changes more or less frequently, which would affect agents' best responses and updated beliefs, respectively, after a certain period of time. However, for the purposes of the present model, a static, exogenous environmental state suffices.
 
 ```python
 payoff_map = {("S", "S"): (3.0,3.0), #Payoffs: Stag-Stag
@@ -53,18 +53,23 @@ m = 0.5  #Truth value for state of nature (mu) (in [0,1] for modeling convenienc
 ### 2) Agents
  
 Agents are nodes in a hierarchical network that represent either individuals or sub-units of the organization. 
- 
- _Description of the "agents" in the system. Things to specify *if they apply*:_
- 
-* _List of agent-owned variables (e.g. age, heading, ID, etc.)_
-* _List of agent-owned methods/procedures (e.g. move, consume, reproduce, die, etc.)_
 
+Agent-owned variables include the following:
+* _State (whether an agent is currently playing either Stag or Hare in the Stag Hunt coordination game)
+*_Previous payoffs (used to keep track of how well the agent has done in the past)
+*_Demand (a value between 0 and 1 that represents how much the agent demands in the divide-the-dollar bargaining game)
+*_Belief (the agent's belief about the value for the state of nature)
+
+There are no agent-owned procedures. All updating occurs via agent interactions.
 
 ```python
-# Include first pass of the code you are thinking of using to construct your agents
-# This may be a set of "turtle-own" variables and a command in the "setup" procedure, a list, an array, or Class constructor
-# Feel free to include any agent methods/procedures you have so far. Filling in with pseudocode is ok! 
-# NOTE: If using Netlogo, remove "python" from the markdown at the top of this section to get a generic code block
+#Assign initial attributes for each agent
+    for n in network.nodes_iter():
+        network.node[n]['state'] = 0
+        network.node[n]['previous_payoffs'] = []
+        network.node[n]['demand'] = RD.random()
+        network.node[n]['belief'] = norm.ppf(RD.uniform(low=norm.cdf(0, m, s), high=norm.cdf(1, m, s), size=1), m, s)
+        #The above truncates the normal distribution between 0 and 1 to make distribution of beliefs easier to interpret
 ```
 
 &nbsp; 
