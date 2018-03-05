@@ -336,7 +336,9 @@ def init():
 
 ### 5) Assessment and Outcome Measures
 
-_What quantitative metrics and/or qualitative features will you use to assess your model outcomes?_
+To assess my model outcomes, I will focus on the time it takes for agents to come to a consensus about their beliefs, and the difference between the value of their beliefs and the value of the truth. I will also build in a limit to the number of iterations the simulation runs, should agents never reach a consensus.
+
+Additionally, I will assess the outcomes described above for different levels of bargaining centralization. Instead of having each agent bargain in a decentralized manner, I will model a more centralized process that removes bargaining at lower levels, in order to reduce bargaining conflict and encourage cooperation and coordination. In doing so, I will also incorporate more weight on the centralized figures' own beliefs to further account for these centralization pressures, and measure the effect that such centralization has on the organization's cultural consensus that emerges.
 
 &nbsp; 
 
