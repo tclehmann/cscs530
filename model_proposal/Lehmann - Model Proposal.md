@@ -27,7 +27,7 @@ Complex systems are relevant for explaining military culture because cultural pr
 
 The main micro/macro processes I am interested in exploring are 1) how micro-level competition and coordination either encourage or discourage macro-level collaborative behavior, and 2) subsequently, how different levels of trust at the micro level lead to the emergence of a macro-level shared consensus that is either a better or worse representation of the true state of nature. 
 
-To explore the micro-level processes, I will model individual agents that interact through a three-stage processes consisting of 1) bargaining, 2) coordination, and 3) exchange of beliefs and updating based on trust levels. The emergent macro-level dynamics of interest will consist of the extent to which information is both successfully exchanged throughout the organization and the extent to which the organization reaches full and correct consensus about the state of nature.
+To explore the micro-level processes, I will model individual agents that interact through a three-stage process consisting of 1) bargaining, 2) coordination, and 3) exchange of beliefs and updating based on trust levels. The emergent macro-level dynamics of interest will consist of the extent to which information is both successfully exchanged throughout the organization and the extent to which the organization reaches full and correct consensus about the state of nature.
 
 &nbsp; 
 
