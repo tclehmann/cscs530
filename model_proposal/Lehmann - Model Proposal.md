@@ -27,7 +27,15 @@ Complex systems are relevant for explaining military culture because cultural pr
 
 The main micro/macro processes I am interested in exploring are 1) how micro-level competition and coordination either encourage or discourage macro-level collaborative behavior, and 2) subsequently, how different levels of trust at the micro level lead to the emergence of a macro-level shared consensus that is either a better or worse representation of the true state of nature. 
 
-To explore the micro-level processes, I will model individual agents that interact through a three-stage process consisting of 1) bargaining, 2) coordination, and 3) exchange of beliefs and updating based on trust levels. The emergent macro-level dynamics of interest will consist of the extent to which information is both successfully exchanged throughout the organization and the extent to which the organization reaches full and correct consensus about the state of nature.
+To explore the micro-level processes, I will model individual agents that interact through a three-stage process consisting of 1) bargaining, 2) coordination, and 3) exchange of beliefs and updating based on trust levels. 
+
+* Bargaining: Agents first face a bargaining problem in their interactions. If they are going to work together, they must first determine how they are going to allocate their resources and, by extension, how they will divide the gains that are captured following their efforts.
+
+* Coordination: If agents can successfully agree on a bargaining solution, they then have to determine what strategy they are going to choose as a best response to all of their neighbors' strategies in a Stag Hunt game (alternatively, agents may choose to imitate the best strategy, rather than choose the best response strategically).
+
+* Exchange of beliefs: Agents start out with an independent belief about the value for the true state of nature. If they can successfully bargain and coordinate their efforts with each other, they exchange beliefs with each other and learn new information about the state of nature. The new information is incorporated into an agent's beliefs based on the weight placed on its neighbor's beliefs, which represents the level of trust that one agent has in another agent.
+
+The emergent macro-level dynamics of interest will consist of the extent to which information is both successfully exchanged throughout the organization, the extent to which the organization reaches full and correct consensus about the state of nature, and the speed at which consensus occurs.
 
 &nbsp; 
 
