@@ -36,20 +36,8 @@ To explore the micro-level processes, I will model individual agents that intera
 ****
 &nbsp; 
 ### 1) Environment
-_Description of the environment in your model. Things to specify *if they apply*:_
 
-* _Boundary conditions (e.g. wrapping, infinite, etc.)_
-* _Dimensionality (e.g. 1D, 2D, etc.)_
-* _List of environment-owned variables (e.g. resources, states, roughness)_
-* _List of environment-owned methods/procedures (e.g. resource production, state change, etc.)_
-
-
-```python
-# Include first pass of the code you are thinking of using to construct your environment
-# This may be a set of "patches-own" variables and a command in the "setup" procedure, a list, an array, or Class constructor
-# Feel free to include any patch methods/procedures you have. Filling in with pseudocode is ok! 
-# NOTE: If using Netlogo, remove "python" from the markdown at the top of this section to get a generic code block
-```
+I do not model the environment, though it is represented as the state of nature. I am interested in both 1) whether an organization can reach an accurate consensus about the state of nature and 2) the speed at which they reach this cultural consensus. Therefore, if I were to model the environment explicitly, I could model it as a changing state of nature that changes more or less frequently, which would affect agents' updated beliefs after a certain period of time. However, for the purposes of the present model, an explicit representation of the environment in not necessary.
 
 &nbsp; 
 
