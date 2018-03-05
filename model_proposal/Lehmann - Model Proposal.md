@@ -1,6 +1,6 @@
-# Model Proposal for _[Project Name]_
+# Model Proposal for the Emergence and Evolution of Military Culture
 
-_Your Name_
+Todd Lehmann
 
 * Course ID: CMPLXSYS 530,
 * Course Title: Computer Modeling of Complex Systems
@@ -13,12 +13,12 @@ _Your Name_
 ### Goal 
 *****
  
-_Provide a short, 1-3 sentence description of the goal of your model_
+Military culture is the set of shared norms among military members about how to fight a war. The goal of this model is to explain why some military cultures lead to more effective organizational performance than others. By doing so, I intend to use this model to explain cultural influences on civil-military relations, battlefield effectiveness, and human rights compliance in war.
 
 &nbsp;  
 ### Justification
 ****
-_Short explanation on why you are using ABM_
+Complex systems are relevant for explaining military culture because cultural processes are inherently tied to interdependent social relationships, feedback loops, and adaptive processes. Therefore, agent-based models (ABMs) can be useful in specifying the micro-level interaction rules and structures that operate to develop an emergent organizational culture. In particular, militaries are large-scale, oftentimes distributed systems comprised of heterogeneous individuals that operate within a particular interaction structure, usually hierarchical. The interactions between individuals, and between individuals and their environment, can lead to macro-level emergent cultural properties that are not predicted by the individual-level interactions. By modeling the dynamics of military culture with this framework, I therefore hope to evaluate the effects that different interaction structures, decision-rules, and distributions of agents have on the cultural properties that emerge from the system of interactions.
 
 &nbsp; 
 ### Main Micro-level Processes and Macro-level Dynamics of Interest
