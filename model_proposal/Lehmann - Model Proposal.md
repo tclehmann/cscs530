@@ -140,6 +140,19 @@ def imitate_best(n):  ##IMITATE THE BEST PROCEDURE
             current_strategy = nextNetwork.node[n]['state']
             nextNetwork.node[n]['demand'] = network.node[nb]['demand']
             current_demand = nextNetwork.node[n]['demand']
+            
+    #Update payoff history
+    if current_strategy == 1:
+        #Calculate expected payoff for playing Stag
+        #stag_exp_payoff = total * SS_selfpayoff * current_demand + (len(nbs) - total) * SH_selfpayoff
+        stag_exp_payoff = total * SS_selfpayoff + (len(nbs) - total) * SH_selfpayoff
+        network.node[n]['previous_payoffs'].append(stag_exp_payoff)
+        nextNetwork.node[n]['demand'] = current_demand
+    elif current_strategy == 0:
+        #Calculate expected payoff for playing Hare
+        hare_exp_payoff = total * HS_selfpayoff + (len(nbs) - total) * HH_selfpayoff
+        network.node[n]['previous_payoffs'].append(hare_exp_payoff)
+        nextNetwork.node[n]['demand'] = current_demand
 ```
 
 &nbsp; 
@@ -165,7 +178,6 @@ def step():
     time += 1
             
     dynamics_draw = RD.random()
-    conformity_draw = RD.random()
     
     if dynamics_draw > prob_imitate:     ###BEST RESPONSE DYNAMICS###
     
@@ -176,38 +188,7 @@ def step():
             
             network.node[n]['previous_payoffs'] = network.node[n]['previous_payoffs'][:memory]
             
-            #If top-level agent demands strict conformity, play current strategy in next round
-            if n == 0 and conformity_draw < prob_conform:
-                nextNetwork.node[n]['state'] = network.node[n]['state']
-                nextNetwork.node[n]['demand'] = network.node[n]['demand']
-                
-                #Following is a modified version of the best response procedure for the case
-                #where the strategy is determined regardless of what others are playing
-                #(i.e., the leader is imposing conformity to preferred strategy)
-                
-                #Determine interaction structure based on shortest path length
-                br_path=NX.single_source_shortest_path_length(network,n)
-                br_path_list = dict((k, v) for k, v in br_path.items() if v <= br_path_length)
-
-                #Count the number of neighbors potentially playing Stag following bargaining game
-                total = 0
-                nbs = list(br_path_list.keys())
-                for nb in nbs:
-                    if network.node[n]['demand'] + network.node[nb]['demand'] <= 1:
-                        total += network.node[nb]['state']
-
-                #Update payoff history
-                if network.node[n]['state'] == 1:
-                    #Calculate expected payoff for playing Stag against each strategy
-                    #stag_exp_payoff = total * SS_selfpayoff * network.node[n]['demand'] + (len(nbs) - total) * SH_selfpayoff
-                    stag_exp_payoff = total * SS_selfpayoff + (len(nbs) - total) * SH_selfpayoff
-                    network.node[n]['previous_payoffs'].append(stag_exp_payoff)
-                elif network.node[n]['state'] == 0:
-                    #Calculate expected payoff for playing Hare
-                    hare_exp_payoff = total * HS_selfpayoff + (len(nbs) - total) * HH_selfpayoff
-                    network.node[n]['previous_payoffs'].append(hare_exp_payoff)
-            else:
-                best_response(n)
+            best_response(n)
 
     else:  ###IMITATE THE BEST DYNAMICS###
 
@@ -218,55 +199,9 @@ def step():
             
             network.node[n]['previous_payoffs'] = network.node[n]['previous_payoffs'][:memory]
             
-            #If top-level agent demands strict conformity, play current strategy in next round
-            if n == 0 and conformity_draw < prob_conform:
-                nextNetwork.node[n]['state'] = network.node[n]['state']
-                nextNetwork.node[n]['demand'] = network.node[n]['demand']
-                
-                #Following is a modified version of the imitate-the-best procedure for the case
-                #where the strategy is determined regardless of what others are playing
-                #(i.e., the leader is imposing conformity to preferred strategy)
-                
-                #Determine imitation structure based on shortest path length
-                imitate_path=NX.single_source_shortest_path_length(network,n)
-                imitate_path_list = dict((k, v) for k, v in imitate_path.items() if v <= imitate_path_length)
-                
-                #Count the number of neighbors potentially playing Stag following bargaining game
-                total = 0
-                nbs = list(imitate_path_list.keys())
-                for nb in nbs:
-                    if network.node[n]['demand'] + network.node[nb]['demand'] <= 1:
-                        total += network.node[nb]['state']
-                
-                #Update payoff history
-                if network.node[n]['state'] == 1:
-                    #Calculate expected payoff for playing Stag
-                    #stag_exp_payoff = total * SS_selfpayoff * current_demand + (len(nbs) - total) * SH_selfpayoff
-                    stag_exp_payoff = total * SS_selfpayoff + (len(nbs) - total) * SH_selfpayoff
-                    network.node[n]['previous_payoffs'].append(stag_exp_payoff)
-                elif network.node[n]['state'] == 0:
-                    #Calculate expected payoff for playing Hare
-                    hare_exp_payoff = total * HS_selfpayoff + (len(nbs) - total) * HH_selfpayoff
-                    network.node[n]['previous_payoffs'].append(hare_exp_payoff)
-                
-            else:
-                imitate_best(n)
+            imitate_best(n)
                     
     network, nextNetwork = nextNetwork, network
-
-    #Update payoff history
-
-    if current_strategy == 1:
-        #Calculate expected payoff for playing Stag
-        #stag_exp_payoff = total * SS_selfpayoff * current_demand + (len(nbs) - total) * SH_selfpayoff
-        stag_exp_payoff = total * SS_selfpayoff + (len(nbs) - total) * SH_selfpayoff
-        network.node[n]['previous_payoffs'].append(stag_exp_payoff)
-        nextNetwork.node[n]['demand'] = current_demand
-    elif current_strategy == 0:
-        #Calculate expected payoff for playing Hare
-        hare_exp_payoff = total * HS_selfpayoff + (len(nbs) - total) * HH_selfpayoff
-        network.node[n]['previous_payoffs'].append(hare_exp_payoff)
-        nextNetwork.node[n]['demand'] = current_demand
 ```
 
 &nbsp; 
