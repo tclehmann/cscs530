@@ -13,7 +13,7 @@ Todd Lehmann
 ### Goal 
 *****
  
-Military culture is the set of norms that exist among military members about how to fight a war. The goal of this model is to explain why some military cultures lead to better organizational performance than others. Specifically, I intend to model the effects that different levels of trust stemming from recruitment methods (coercive vs. voluntary, class-based vs. non-class-based) and command structures (centralized vs. decentralized) have on the emergence of group-level beliefs about a state of nature, and show how variations in recruitment and command can lead to either more or less accurate cultural norms.
+Military culture is the set of norms that exist among military members about how to fight a war. The goal of this model is to explain why some military cultures lead to better organizational performance than others. Specifically, I intend to model the effects that different levels of trust stemming from recruitment methods (coercive vs. voluntary, class-based vs. non-class-based) and command structures (centralized vs. decentralized) have on the emergence of group-level beliefs about a state of nature, and show how variations in trust can lead to either more or less accurate cultural norms.
 
 &nbsp;  
 ### Justification
