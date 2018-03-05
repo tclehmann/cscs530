@@ -344,4 +344,12 @@ Additionally, I will assess the outcomes described above for different levels of
 
 ### 6) Parameter Sweep
 
-_What parameters are you most interested in sweeping through? What value ranges do you expect to look at for your analysis?_
+I am most interested in sweeping the following parameters:
+
+* Truth value in [0,1]
+* Noise term (standard deviation for the truth value, normally distributed with mean zero) in (0,1]
+* Probability of imitation versus best response in (0, 1)
+* Number supervised (2 to 10) and number of levels (1 to 3) for the balanced tree
+* Best response path length (value from 1 to 2 times the number of levels in the tree)
+* Imitation path length (value from 1 to 2 times the number of levels in the tree)
+* Initial number of Stag players (from zero to all agents in a given tree)
