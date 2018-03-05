@@ -63,8 +63,8 @@ m = 0.5  #Truth value for state of nature (mu) (in [0,1] for modeling convenienc
 Agents are nodes in a hierarchical network that represent either individuals or sub-units of the organization. 
 
 Agent-owned variables include the following:
-* Demand (a value between 0 and 1 that represents how much the agent demands in the divide-the-dollar bargaining game)
-* State (whether an agent is currently playing either Stag or Hare in the Stag Hunt coordination game)
+* Demand (a value between 0 and 1 that represents how much the agent demands in a divide-the-dollar bargaining game)
+* State (an agent's strategy, i.e., whether an agent is playing 'Stag' or 'Hare' in the Stag Hunt coordination game)
 * Previous payoffs (used to keep track of how well the agent has done in the past)
 * Belief (the agent's belief about the value for the state of nature)
 
