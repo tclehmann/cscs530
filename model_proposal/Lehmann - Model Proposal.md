@@ -6,6 +6,12 @@ Todd Lehmann
 * Course Title: Computer Modeling of Complex Systems
 * Term: Winter, 2018
 
+&nbsp; 
+
+__*LS COMMENTS:*__
+*I really like your conceptual approach in general here, especially vis-a-vis honing in on how coordination in action often acts as precursor for belief sharing and cultural consensus/social cohesion and the potential role of hierarchical structure in that process. Currently though, I think you might be trying to do too many things all at once with this model. Having 3 layers of interaction going on (Bargaining, Stag Hunt, Belief updating) in addition with 2 potential pathways for choosing strategies (imitate and best response), two types of neighborhoods to consider (imitation and game play) and additional variables which will also be affecting interaction (coercion and class) as well as choices about hierarchical structure are all baking in a bunch of assumptions that will make it hard to disentangle what is going on in the model (let along set you up for a huge amount of coding, a really complicated debugging process, massive amounts of analysis, etc.)*
+
+*My suggestions in this regard might be to try to find a way to start way simpler, maybe with just updating a stag-hunt game on a network with memory where individuals just use their neighbors' prior decisions as the basis for their best guess of what to choose next turn. From there, you can then add another layer of belief updating wherein successful coordination between individuals leads to either less noisy or more strongly weighted communications on updating belief. That is just one possible route to go - there are others as well. Definitely though I would suggest slimming this model down a good bit and getting something simple running really well first and then building out from there. It will not only make your job easier in the immediacy, it will greatly strengthen any conclusions you end up drawing and make verification worlds easier.*
 
 
 &nbsp; 
@@ -73,6 +79,10 @@ Additionally, agents have fixed attributes that are used to update their beliefs
 * Hierarchy level (an agent's position in the hierarchy based on its level)
 * Class level (an agent's class identity, e.g., high-level officers come from upper class and low-level soldiers come from lower class)
 
+&nbsp;
+
+
+
 ```python
 import numpy.random as RD
 import networkx as NX
@@ -92,6 +102,11 @@ from scipy.stats import norm
 
 Agent-owned procedures exist for the Stag Hunt coordiation game. Agents either choose a best response to their neighbors' expected strategies (based on bargaining outcome), or they choose to imitate the most successful neighbor's strategy.
 
+&nbsp;
+
+__*LS COMMENTS:*__
+*I was not sure from the the below if "neighbors" here meant only one's immediate neighbors or all other nodes who are reachable in a certain number of steps? single_source_shortest_path_length() will give the shortest distance to all other nodes in the connected component of a network (though there is an optional argument "cutoff" which will return only nodes that are <= that number of steps away). If you only want immediate neighbors, you can also just use the "neighbors(nodeID)" function.*
+
 ```python
 def best_response(n):  ##BEST RESPONSE PROCEDURE
     #Determine interaction structure based on shortest path length
@@ -105,6 +120,10 @@ def best_response(n):  ##BEST RESPONSE PROCEDURE
         if network.node[n]['demand'] + network.node[nb]['demand'] <= 1:
             total += network.node[nb]['state']
 
+    ### LS COMMENTS ###
+    # Wasn't entirely clear here on how the bargaining game interacts with the Stag-hunt one. May just need some more explanation of 
+    # what some of these variables are doing and/or how they are being updated.
+    
     #Calculate expected payoff for playing Stag against each strategy
     stag_exp_payoff = total * SS_selfpayoff * network.node[n]['demand'] + (len(nbs) - total) * SH_selfpayoff
 
@@ -163,6 +182,10 @@ def imitate_best(n):  ##IMITATE THE BEST PROCEDURE
 def update_belief(n):
     #For each neighbor with which an agent plays "Stag," exchange beliefs and update own belief based on level of trust in each neighbor
     
+    ## LS COMMENTS###
+    # Is this true even if the individual played Hare? May need to discuss the motivation for this decision a bit more.
+    
+    
     #Determine interaction structure based on shortest path length
     br_path=NX.single_source_shortest_path_length(network,n)
     br_path_list = dict((k, v) for k, v in br_path.items() if v <= br_path_length)
@@ -203,6 +226,11 @@ network = NX.balanced_tree(sup,lev)
 Within this network, interactions operate over two neighborhoods: the interaction neighborhood (which extends to some specified path length in the network) and the imitation neighborhood (which may extend to a different specified path length in the network, e.g., only to the immediate neighborhood in the network). Agents are able to interact with any other agent within their interaction neighborhood, but they only imitate agents in their imitation neighborhood. 
  
 **_Action Sequence_**
+nbsp;
+
+__*LS COMMENTS:*__
+*See previous comments regarding modeling simplification*
+
 
 1. An agent probabilistically chooses either the "best response" procedure or the "imitate the best" procedure. The probability of each procedure is set at the beginning of the simulation.
 2. For the "best response" procedure, each agent determines the expected payoffs for playing "Stag" or "Hare" this round based on the outcome of the divide-the-dollar bargaining game. (NOTE: This bargaining problem can be elevated to a higher level in the hierarchy if command is more centralized, thereby removing the bargaining problem at lower levels). If bargaining is successful, an agent expects its neighbor to play Stag, otherwise the agent expects its neighbor to play Hare. The agent then chooses the strategy that provides the highest expected payoff when played against all its neighbors' expected strategies. 
